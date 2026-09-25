@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Tu pregunta</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #111; color: #f5f5f5; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; box-sizing: border-box;
+  }
+  main { max-width: 480px; width: 100%; }
+  h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 12px; }
+  p { font-size: 1.25rem; line-height: 1.4; margin: 0 0 32px; color: #ccc; }
+  .btn {
+    display: block; padding: 22px 16px; border-radius: 14px;
+    background: #ffd54a; color: #111; font-size: 1.6rem; font-weight: 700;
+    text-decoration: none;
+  }
+  .alt { display: inline-block; margin-top: 28px; font-size: 1.15rem; color: #9fd3ff; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Tu pregunta</h1>
+  <p id="msg">Abriendo tu pregunta&hellip;<br>Si no se abre sola, tocá el botón.</p>
+  <!-- Estos href son el respaldo si JavaScript no corre; el script los reemplaza. -->
+  <a id="go" class="btn" href="https://canva.link/f4v3dljfl72v3c3">Ver mi pregunta</a>
+  <a id="alt" class="alt" href="https://canva.link/te71c3sfkpl6zg3">¿No abre? Probá con este link</a>
+</main>
+<script src="links.js"></script>
+<script>
+(function () {
+  var KEY = "ultimaPregunta";
+  var go = document.getElementById("go");
+  var alt = document.getElementById("alt");
+  var links = (window.LINKS || []).filter(function (l) { return typeof l === "string" && l; });
+
+  // Si links.js no cargó, usamos el link fijo del botón
+  if (!links.length) { location.replace(go.href); return; }
+
+  var last = null;
+  try { last = localStorage.getItem(KEY); } catch (e) {}
+
+  var options = links.length > 1
+    ? links.filter(function (l) { return l !== last; })
+    : links;
+  if (!options.length) options = links;
+  var pick = options[Math.floor(Math.random() * options.length)];
+  var other = links.length > 1
+    ? links.filter(function (l) { return l !== pick; })[Math.floor(Math.random() * (links.length - 1))]
+    : pick;
+
+  go.href = pick;
+  alt.href = other;
+
+  try { localStorage.setItem(KEY, pick); } catch (e) {}
+
+  location.replace(pick);
+})();
+</script>
+</body>
+</html>
